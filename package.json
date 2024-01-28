@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/benitaisaac/employee_tracker#readme",
   "dependencies": {
-    "inquirer": "^9.2.13"
+    "inquirer": "^8.2.4"
   }
 }
