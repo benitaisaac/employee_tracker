@@ -1,0 +1,22 @@
+{
+  "name": "employee_tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benitaisaac/employee_tracker.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benitaisaac/employee_tracker/issues"
+  },
+  "homepage": "https://github.com/benitaisaac/employee_tracker#readme",
+  "dependencies": {
+    "inquirer": "^9.2.13"
+  }
+}
