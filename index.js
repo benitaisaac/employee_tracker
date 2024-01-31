@@ -36,6 +36,11 @@ inquirer
 .then((answers) => {
   switch(answers.options){
     case 'view all departments':
+      const sql = `SELECT * FROM department`;
+      db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.table(results);
+      }); 
       console.log("view all departments");
       break
     
@@ -69,22 +74,3 @@ inquirer
   //   console.log('Saved!');
   // });
 })
-
-//   inquirer
-// .prompt(questions)
-
-// .then((answers) => {
-
-// switch(answers.shape){
-//     case 'circle':
-//         mm = new Circle(answers.text, answers.text_color, answers.shape_color);
-//         break
-
-//     case 'square':
-//         mm = new Square(answers.text, answers.text_color, answers.shape_color);
-//         break
-
-//     case 'triangle':
-//         mm = new Triangle(answers.text, answers.text_color, answers.shape_color);
-//         break
-// }
