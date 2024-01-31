@@ -36,6 +36,7 @@ inquirer
 .then((answers) => {
   switch(answers.options){
     case 'view all departments':
+      //TODO: set this code in query.sql and import module to this
       const viewDeptSql = `SELECT * FROM department`;
       db.query(viewDeptSql, (err, results) => {
         if (err) throw err;
