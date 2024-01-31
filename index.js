@@ -36,8 +36,8 @@ inquirer
 .then((answers) => {
   switch(answers.options){
     case 'view all departments':
-      const sql = `SELECT * FROM department`;
-      db.query(sql, (err, results) => {
+      const viewDeptSql = `SELECT * FROM department`;
+      db.query(viewDeptSql, (err, results) => {
         if (err) throw err;
         console.table(results);
       }); 
@@ -45,10 +45,20 @@ inquirer
       break
     
     case 'view all roles':
+      const viewRoleSql = `SELECT * FROM role`;
+      db.query(viewRoleSql, (err, results) => {
+        if (err) throw err;
+        console.table(results);
+      }); 
       console.log("view all roles");
       return
 
     case 'view all employees':
+      const viewEmployeeSql = `SELECT * FROM employee`;
+      db.query(viewEmployeeSql, (err, results) => {
+        if (err) throw err;
+        console.table(results);
+      }); 
       console.log("view all employees");
       return
 
