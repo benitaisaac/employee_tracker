@@ -1,11 +1,23 @@
 const inquirer = require('inquirer');
 const fs = require('fs'); 
+const mysql = require('mysql2');
+
+// Connect to database
+const db = mysql.createConnection(
+  {
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'employee_db'
+  },
+  console.log('Connected to the employee_db')
+);
 
 const questions = [
     {
         type: 'list',
         name: 'options',
-        message: 'What shape do you want your logo to be?',
+        message: 'What would you like to do?',
         choices: [
             'view all departments',
             'view all roles',
