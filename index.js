@@ -15,28 +15,64 @@ const questions = [
             'add an employee',
             'update an employee role'
         ]
-    },
-    {
-        type: 'input',
-        name: 'shape_color',
-        message: 'What color do you want the shape to be?',
     }
 ]
 
-
 inquirer
-  .prompt(questions)
-  .then((answers) => {
-    fs.writeFile('file.txt', function (err) {
-        if (err) throw err;
-        console.log('Saved!');
-      });
-    // Use user feedback for... whatever!!
-  })
-  .catch((error) => {
-    if (error.isTtyError) {
-      // Prompt couldn't be rendered in the current environment
-    } else {
-      // Something else went wrong
-    }
-  });
+.prompt(questions)
+
+.then((answers) => {
+  switch(answers.options){
+    case 'view all departments':
+      console.log("view all departments");
+      break
+    
+    case 'view all roles':
+      console.log("view all roles");
+      return
+
+    case 'view all employees':
+      console.log("view all employees");
+      return
+
+    case 'add a department':
+      console.log("add a department");
+      return
+
+    case 'add a role':
+      console.log("add a role");
+      return
+  
+    case 'add an employee':
+      console.log("add an employee");
+      return
+    
+    case 'update an employee role':
+      console.log("update an employee role");
+      return
+
+  }
+  // fs.writeFile('testing.txt', mm.renderSvg(), function (err) {
+  //   if (err) throw err;
+  //   console.log('Saved!');
+  // });
+})
+
+//   inquirer
+// .prompt(questions)
+
+// .then((answers) => {
+
+// switch(answers.shape){
+//     case 'circle':
+//         mm = new Circle(answers.text, answers.text_color, answers.shape_color);
+//         break
+
+//     case 'square':
+//         mm = new Square(answers.text, answers.text_color, answers.shape_color);
+//         break
+
+//     case 'triangle':
+//         mm = new Triangle(answers.text, answers.text_color, answers.shape_color);
+//         break
+// }
