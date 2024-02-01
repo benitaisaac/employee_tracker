@@ -30,6 +30,14 @@ const questions = [
     }
 ]
 
+const addDeptInq = [
+    {
+      type: 'input',
+      name: 'newDept',
+      message: 'Enter name for the new dept',
+  },
+]
+
 inquirer
 .prompt(questions)
 
