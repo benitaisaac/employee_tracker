@@ -71,7 +71,18 @@ inquirer
       console.log("view all employees");
       return
 
+// WHEN I choose to add a department
+// THEN I am prompted to enter the name of the department and that department is added to the database
+
     case 'add a department':
+      inquirer
+      .prompt(addDeptInq)
+      .then((answers) => {
+        db.query(answers, (err, results) => {
+          if (err) throw err;
+          console.table(results);
+        });
+      })
       console.log("add a department");
       return
 

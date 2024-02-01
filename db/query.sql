@@ -14,3 +14,9 @@ JOIN role ON role.id = employee.role_id
 JOIN department ON role.department_id = department.id
 LEFT OUTER JOIN (SELECT employee.id as manager_id, employee.first_name as manager_first_name, employee.last_name as manager_last_name FROM employee) manager ON employee.manager_id = manager.manager_id;
 
+
+-- Code for adding a new department: 
+INSERT INTO department (name)
+VALUES ('New Department');
+
+SELECT * FROM department;
