@@ -74,10 +74,11 @@ inquirer
       inquirer
       .prompt(addDeptInq)
       .then((answers) => {
-        db.query(answers, (err, results) => {
-          if (err) throw err;
-          console.table(results);
-        });
+        console.log(answers.newDept);
+        // db.query(addDeptSql, (err, results) => {
+        //   if (err) throw err;
+        //   console.table(results);
+        // });
       })
       console.log("add a department");
       return

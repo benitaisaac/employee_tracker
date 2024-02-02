@@ -15,9 +15,10 @@ LEFT OUTER JOIN (SELECT employee.id as manager_id, employee.first_name as manage
 
 
 // TODO: change 'new dept' to a variable name
-const addDeptSql = 
-`INSERT INTO department (name)
-VALUES ('New Department');
+const addDeptSql = (newDept) => {
+return `INSERT INTO department (name)
+VALUES ('${newDept}');
 SELECT * FROM department;`
+}
 
 module.exports = {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql}
