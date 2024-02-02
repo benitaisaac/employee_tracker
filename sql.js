@@ -18,7 +18,7 @@ LEFT OUTER JOIN (SELECT employee.id as manager_id, employee.first_name as manage
 const addDeptSql = (newDept) => {
 return `INSERT INTO department (name)
 VALUES ('${newDept}');
-SELECT * FROM department;`
+SELECT * FROM department;`;
 }
 
 module.exports = {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql}

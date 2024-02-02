@@ -11,7 +11,8 @@ const db = mysql.createConnection(
     host: 'localhost',
     user: 'root',
     password: 'password',
-    database: 'employee_db'
+    database: 'employee_db',
+    multipleStatements: true, // Enable multiple query execution
   },
   console.log('Connected to the employee_db')
 );
@@ -74,13 +75,12 @@ inquirer
       inquirer
       .prompt(addDeptInq)
       .then((answers) => {
-        console.log(answers.newDept);
-        // db.query(addDeptSql, (err, results) => {
-        //   if (err) throw err;
-        //   console.table(results);
-        // });
+        // console.log(answers.newDept);
+        db.query(addDeptSql(answers.newDept), (err, results) => {
+          if (err) throw err;
+          console.table(results[1]);
+        });
       })
-      console.log("add a department");
       return
 
     case 'add a role':
