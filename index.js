@@ -2,6 +2,9 @@ const inquirer = require('inquirer');
 const fs = require('fs'); 
 const mysql = require('mysql2');
 
+//require template literals for SQL query 
+const {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql} = require('./sql');
+
 // Connect to database
 const db = mysql.createConnection(
   {
@@ -44,8 +47,6 @@ inquirer
 .then((answers) => {
   switch(answers.options){
     case 'view all departments':
-      //TODO: set this code in query.sql and import module to this
-      const viewDeptSql = `SELECT * FROM department`;
       db.query(viewDeptSql, (err, results) => {
         if (err) throw err;
         console.table(results);
@@ -54,8 +55,7 @@ inquirer
       break
     
     case 'view all roles':
-      const viewRoleSql = `SELECT * FROM role`;
-      db.query(viewRoleSql, (err, results) => {
+      db.query(viewRolesSql, (err, results) => {
         if (err) throw err;
         console.table(results);
       }); 
@@ -63,16 +63,12 @@ inquirer
       return
 
     case 'view all employees':
-      const viewEmployeeSql = `SELECT * FROM employee`;
-      db.query(viewEmployeeSql, (err, results) => {
+      db.query(viewEmployeesSql, (err, results) => {
         if (err) throw err;
         console.table(results);
       }); 
       console.log("view all employees");
       return
-
-// WHEN I choose to add a department
-// THEN I am prompted to enter the name of the department and that department is added to the database
 
     case 'add a department':
       inquirer

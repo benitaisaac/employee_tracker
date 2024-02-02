@@ -1,7 +1,7 @@
 -- WHEN I choose to view all roles
 -- THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
 
-SELECT title, role.id, salary, department.name, department.id 
+SELECT title, role.id as role_id, salary, department.name as department
 FROM role
 JOIN department ON role.department_id = department.id;
 
@@ -18,5 +18,10 @@ LEFT OUTER JOIN (SELECT employee.id as manager_id, employee.first_name as manage
 -- Code for adding a new department: 
 INSERT INTO department (name)
 VALUES ('New Department');
-
 SELECT * FROM department;
+
+-- WHEN I choose to add a role
+-- THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
+INSERT INTO role (title) VALUES ('new role title test');
+INSERT INTO role (salary) VALUES ('new salary test');
+INSERT INTO department (name) VALUES ('new role dept name test'); 
