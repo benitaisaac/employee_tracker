@@ -3,7 +3,7 @@ const fs = require('fs');
 const mysql = require('mysql2');
 
 //require template literals for SQL query 
-const {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql, addRoleSql, addEmployeeSql} = require('./sql');
+const {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql, addRoleSql, addEmployeeSql, updateEmployeeRole} = require('./sql');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -82,6 +82,27 @@ const addEmployeeInq = [
     message: 'Enter manager name (ex: John, Jane, Mike etc. ',
   }
 ]
+
+const updateEmployeeInq = [
+  {
+    type: 'input',
+    name: 'employeeId',
+    message: 'Enter the ID of the employee that you would like to update',
+  },
+  {
+    type: 'list',
+    name: 'employeeRole',
+    message: 'What new role will this employee have?',
+    choices: [
+        'HR Manager',
+        'Financial Analyst', 
+        'Marketing Specialist', 
+        'Software Engineer', 
+        'Sales Representative',
+        'Hardware Engineer'
+    ]
+  }
+]
 inquirer
 .prompt(questions)
 
@@ -157,9 +178,19 @@ inquirer
       return
     
     case 'update an employee role':
-      console.log("update an employee role");
+      inquirer
+      .prompt(updateEmployeeInq)
+      .then((answers) => {
+        const sqlStatements = updateEmployeeRole(answers.employeeId, answers.employeeRole);
+      sqlStatements.forEach((sql) => {
+        db.query(sql, (err, results) => {
+          if (err) throw err;
+          console.log('Congrats! Your new employee has been added to the database. View the employee, role title and manager below.')
+          // console.table(results[1]);
+        })
+        });
+      })
       return
-
   }
   // fs.writeFile('testing.txt', mm.renderSvg(), function (err) {
   //   if (err) throw err;
