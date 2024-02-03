@@ -29,7 +29,8 @@ const questions = [
             'add a department',
             'add a role',
             'add an employee',
-            'update an employee role'
+            'update an employee role',
+            'exit'
         ]
     }
 ]
@@ -185,13 +186,18 @@ inquirer
       sqlStatements.forEach((sql) => {
         db.query(sql, (err, results) => {
           if (err) throw err;
-          console.log('Congrats! Your new employee has been added to the database. View the employee, role title and manager below.')
-          // console.table(results[1]);
+          console.log('Congrats! This employees role was updated.')
+          console.table(results);
         })
         });
       })
       return
+
+      case 'exit':
+        process.exit();
+
   }
+
   // fs.writeFile('testing.txt', mm.renderSvg(), function (err) {
   //   if (err) throw err;
   //   console.log('Saved!');
