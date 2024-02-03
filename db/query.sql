@@ -22,5 +22,25 @@
 
 -- WHEN I choose to add a role
 -- THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-INSERT INTO role (title, salary) VALUES ('new role title test', 1000000);
-INSERT INTO department (name) VALUES ('new role dept name test'); 
+-- INSERT INTO role (title, salary) VALUES ('new role title test', 1000000);
+-- INSERT INTO department (name) VALUES ('new role dept name test'); 
+
+-- WHEN I choose to add an employee
+-- THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
+
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+SELECT 'Brad', 'Bradley', role.id, employee.id
+FROM role, employee
+WHERE role.title = 'Financial Analyst' 
+AND employee.first_name = 'Emily';
+
+SELECT e.first_name AS employee_first_name, e.last_name AS employee_last_name, r.title AS role_title, m.first_name AS manager_first_name
+FROM employee e
+JOIN role r ON e.role_id = r.id
+LEFT JOIN employee m ON e.manager_id = m.id
+WHERE e.id = 4;
+
+
+
+

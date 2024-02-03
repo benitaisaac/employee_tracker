@@ -3,7 +3,7 @@ const fs = require('fs');
 const mysql = require('mysql2');
 
 //require template literals for SQL query 
-const {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql, addRoleSql} = require('./sql');
+const {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql, addRoleSql, addEmployeeSql} = require('./sql');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -60,6 +60,28 @@ const addRoleInq = [
   }
 ]
 
+const addEmployeeInq = [
+  {
+    type: 'input',
+    name: 'employeeFirstName',
+    message: 'Enter first name of new employee',
+  },
+  {
+    type: 'input',
+    name: 'employeeLastName',
+    message: 'Enter last name of new employee',
+  },
+  {
+    type: 'input',
+    name: 'roleTitle',
+    message: 'Enter role title (ex: Financial Analyst, HR Manager, Software Engineer, etc. ',
+  },
+  {
+    type: 'input',
+    name: 'managerName',
+    message: 'Enter manager name (ex: John, Jane, Mike etc. ',
+  }
+]
 inquirer
 .prompt(questions)
 
@@ -100,8 +122,6 @@ inquirer
         });
       })
       return
-// WHEN I choose to add a role
-// THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
 
     case 'add a role':
       inquirer
@@ -119,8 +139,21 @@ inquirer
       })
       return
   
+//       WHEN I choose to add an employee
+// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
     case 'add an employee':
-      console.log("add an employee");
+      inquirer
+      .prompt(addEmployeeInq)
+      .then((answers) => {
+        const sqlStatements = addEmployeeSql(answers.employeeFirstName, answers.employeeLastName, answers.roleTitle, answers.managerName);
+      sqlStatements.forEach((sql) => {
+        db.query(sql, (err, results) => {
+          if (err) throw err;
+          console.log('Congrats! Your new employee has been added to the database. View the employee, role title and manager below.')
+          // console.table(results[1]);
+        })
+        });
+      })
       return
     
     case 'update an employee role':
