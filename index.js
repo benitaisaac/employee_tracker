@@ -197,9 +197,4 @@ inquirer
         process.exit();
 
   }
-
-  // fs.writeFile('testing.txt', mm.renderSvg(), function (err) {
-  //   if (err) throw err;
-  //   console.log('Saved!');
-  // });
 })
