@@ -3,7 +3,7 @@ const fs = require('fs');
 const mysql = require('mysql2');
 
 //require template literals for SQL query 
-const {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql} = require('./sql');
+const {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql, addRoleSql} = require('./sql');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -40,6 +40,24 @@ const addDeptInq = [
       name: 'newDept',
       message: 'Enter name for the new dept',
   },
+]
+
+const addRoleInq = [
+  {
+    type: 'input',
+    name: 'roleName',
+    message: 'Enter name for the new role',
+  },
+  {
+    type: 'input',
+    name: 'salary',
+    message: 'Enter salary for the new role',
+  },
+  {
+    type: 'input',
+    name: 'department',
+    message: 'Enter department for new role',
+  }
 ]
 
 inquirer
@@ -82,9 +100,23 @@ inquirer
         });
       })
       return
+// WHEN I choose to add a role
+// THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
 
     case 'add a role':
-      console.log("add a role");
+      inquirer
+      .prompt(addRoleInq)
+      .then((answers) => {
+        // console.log(answers);
+        const sqlStatements = addRoleSql(answers.roleName, answers.salary, answers.department);
+      sqlStatements.forEach((sql) => {
+        db.query(sql, (err, results) => {
+          if (err) throw err;
+          console.log('Congrats! Your new role has been added to the database. View the new title and salary below.')
+          console.table(results[2]);
+        })
+        });
+      })
       return
   
     case 'add an employee':
