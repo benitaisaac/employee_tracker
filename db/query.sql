@@ -29,18 +29,24 @@
 -- THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-SELECT 'Brad', 'Bradley', role.id, employee.id
-FROM role, employee
-WHERE role.title = 'Financial Analyst' 
-AND employee.first_name = 'Emily';
+-- INSERT INTO employee (first_name, last_name, role_id, manager_id)
+-- SELECT 'Brad', 'Bradley', role.id, employee.id
+-- FROM role, employee
+-- WHERE role.title = 'Financial Analyst' 
+-- AND employee.first_name = 'Emily';
 
-SELECT e.first_name AS employee_first_name, e.last_name AS employee_last_name, r.title AS role_title, m.first_name AS manager_first_name
-FROM employee e
-JOIN role r ON e.role_id = r.id
-LEFT JOIN employee m ON e.manager_id = m.id
-WHERE e.id = 4;
+-- SELECT e.first_name AS employee_first_name, e.last_name AS employee_last_name, r.title AS role_title, m.first_name AS manager_first_name
+-- FROM employee e
+-- JOIN role r ON e.role_id = r.id
+-- LEFT JOIN employee m ON e.manager_id = m.id
+-- WHERE e.id = 4;
 
+-- WHEN I choose to update an employee role
+-- THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+
+UPDATE employee
+SET role_id = (SELECT role.id FROM role WHERE title = 'Hardware Engineer')
+WHERE id = 2;
 
 
 
