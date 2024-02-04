@@ -5,6 +5,7 @@ const mysql = require('mysql2');
 //require template literals for SQL query 
 const {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql, addRoleSql, addEmployeeSql, updateEmployeeRole} = require('./sql');
 
+
 // Connect to database
 const db = mysql.createConnection(
   {
@@ -16,6 +17,7 @@ const db = mysql.createConnection(
   },
   console.log('Connected to the employee_db')
 );
+
 
 const questions = [
     {
@@ -73,14 +75,16 @@ const addEmployeeInq = [
     message: 'Enter last name of new employee',
   },
   {
-    type: 'input',
+    type: 'list',
     name: 'roleTitle',
-    message: 'Enter role title (ex: Financial Analyst, HR Manager, Software Engineer, etc. ',
+    message: 'What is this employee role?',
+    choices: []
   },
   {
-    type: 'input',
+    type: 'list',
     name: 'managerName',
-    message: 'Enter manager name (ex: John, Jane, Mike etc. ',
+    message: 'Who is the manager?',
+    choices: []
   }
 ]
 
@@ -104,6 +108,32 @@ const updateEmployeeInq = [
     ]
   }
 ]
+// Create arrays for list options
+const roleTitles = () => {
+  return new Promise((resolve, reject) => {
+    let titles, managers;
+    db.query(`SELECT title FROM role;`,
+      (err, results) => {
+        if (err) throw err;
+        // Extract the titles from the query results
+        const result = results.map((row) => row.title);
+        // console.log(results);
+        // console.log(titles);
+        titles = result;
+        db.query(`SELECT DISTINCT manager.first_name
+      FROM employee
+      JOIN employee AS manager ON employee.manager_id = manager.id;`, (err, results) => {
+        if (err) throw err;
+        const result = results.map((row) => row.first_name);
+        managers = result;
+        resolve({titles, managers})
+      }
+    )
+    });
+  })
+};
+
+
 inquirer
 .prompt(questions)
 
@@ -156,14 +186,25 @@ inquirer
           if (err) throw err;
           console.log('Congrats! Your new role has been added to the database. View the new title and salary below.')
           console.table(results[2]);
+
+          // db.query(`SELECT title FROM role;`, (err, results) => {
+          //   if (err) throw err;
+          //   // Extract the titles from the query results
+          //   const titles = results.map((row) => row.title);
+          //   console.log('Titles:', titles);
+          //   // console.log(results);
+          //   return;
+          // })
         })
         });
       })
       return
   
-//       WHEN I choose to add an employee
-// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
     case 'add an employee':
+      roleTitles().then(({titles, managers}) =>  {
+      addEmployeeInq[2].choices = titles;
+      addEmployeeInq[3].choices = managers;
+      // console.log(addEmployeeInq[2]);
       inquirer
       .prompt(addEmployeeInq)
       .then((answers) => {
@@ -176,7 +217,9 @@ inquirer
         })
         });
       })
+    })
       return
+      
     
     case 'update an employee role':
       inquirer
@@ -187,7 +230,10 @@ inquirer
         db.query(sql, (err, results) => {
           if (err) throw err;
           console.log('Congrats! This employees role was updated.')
-          console.table(results);
+
+          db.query(`SELECT title FROM role`)
+    
+          // console.table(results);
         })
         });
       })

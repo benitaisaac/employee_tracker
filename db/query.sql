@@ -44,9 +44,15 @@
 -- WHEN I choose to update an employee role
 -- THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
 
-UPDATE employee
-SET role_id = (SELECT role.id FROM role WHERE title = 'Hardware Engineer')
-WHERE id = 2;
+-- UPDATE employee
+-- SET role_id = (SELECT role.id FROM role WHERE title = 'Hardware Engineer')
+-- WHERE id = 2;
 
 
+-- Code to view all roles
+-- SELECT title FROM role;
 
+-- To select a manager: 
+SELECT DISTINCT manager.first_name
+FROM employee AS employee
+JOIN employee AS manager ON employee.manager_id = manager.id;
