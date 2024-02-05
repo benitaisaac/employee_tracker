@@ -144,33 +144,21 @@ async function promptUser() {
   try {
     const answers = await inquirer.prompt(questions);
     switch (answers.options) {
-    }
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-promptUser();
-
-inquirer
-  .prompt(questions)
-
-  .then((answers) => {
-    switch (answers.options) {
       case "view all departments":
         db.query(viewDeptSql, (err, results) => {
           if (err) throw err;
           console.table(results);
         });
         console.log("view all departments");
-        break;
+        promptUser();
 
       case "view all roles":
         db.query(viewRolesSql, (err, results) => {
           if (err) throw err;
           console.table(results);
         });
-        console.log("view all roles");
-        return;
+        // console.log("view all roles");
+        promptUser();
 
       case "view all employees":
         db.query(viewEmployeesSql, (err, results) => {
@@ -178,92 +166,152 @@ inquirer
           console.table(results);
         });
         console.log("view all employees");
-        return;
+        promptUser();
 
-      case "add a department":
-        inquirer.prompt(addDeptInq).then((answers) => {
-          // console.log(answers.newDept);
-          db.query(addDeptSql(answers.newDept), (err, results) => {
-            if (err) throw err;
-            console.table(results[1]);
-          });
-        });
-        return;
-
-      case "add a role":
-        inquirer.prompt(addRoleInq).then((answers) => {
-          // console.log(answers);
-          const sqlStatements = addRoleSql(
-            answers.roleName,
-            answers.salary,
-            answers.department
-          );
-          sqlStatements.forEach((sql) => {
-            db.query(sql, (err, results) => {
-              if (err) throw err;
-              console.log(
-                "Congrats! Your new role has been added to the database. View the new title and salary below."
-              );
-              console.table(results[2]);
-
-              // db.query(`SELECT title FROM role;`, (err, results) => {
-              //   if (err) throw err;
-              //   // Extract the titles from the query results
-              //   const titles = results.map((row) => row.title);
-              //   console.log('Titles:', titles);
-              //   // console.log(results);
-              //   return;
-              // })
-            });
-          });
-        });
-        return;
-
-      case "add an employee":
-        roleTitles().then(({ titles, managers }) => {
-          addEmployeeInq[2].choices = titles;
-          addEmployeeInq[3].choices = managers;
-          // console.log(addEmployeeInq[2]);
-          inquirer.prompt(addEmployeeInq).then((answers) => {
-            const sqlStatements = addEmployeeSql(
-              answers.employeeFirstName,
-              answers.employeeLastName,
-              answers.roleTitle,
-              answers.managerName
-            );
-            sqlStatements.forEach((sql) => {
-              db.query(sql, (err, results) => {
+        case "add a department":
+          async function addDept() {
+            try{
+              const answers = await inquirer.prompt(addDeptInq);
+              console.log('new dept:', answers.newDept);
+              db.query(addDeptSql(answers.newDept), (err, results) => {
                 if (err) throw err;
-                console.log(
-                  "Congrats! Your new employee has been added to the database. View the employee, role title and manager below."
-                );
-                // console.table(results[1]);
-              });
-            });
-          });
-        });
-        return;
+                console.table(results[1]);
+              }); 
+            } catch (error){
+              console.error(error.message);
+            }
+          }
+          addDept();
+          return;
 
-      case "update an employee role":
-        inquirer.prompt(updateEmployeeInq).then((answers) => {
-          const sqlStatements = updateEmployeeRole(
-            answers.employeeId,
-            answers.employeeRole
-          );
-          sqlStatements.forEach((sql) => {
-            db.query(sql, (err, results) => {
-              if (err) throw err;
-              console.log("Congrats! This employees role was updated.");
-
-              db.query(`SELECT title FROM role`);
-
-              // console.table(results);
-            });
-          });
-        });
-        return;
-
-      case "exit":
-        process.exit();
+      // inquirer.prompt(addDeptInq).then((answers) => {
+      //   // console.log(answers.newDept);
+      //   db.query(addDeptSql(answers.newDept), (err, results) => {
+      //     if (err) throw err;
+      //     console.table(results[1]);
+      //   });
+      // });
+      // return;
     }
-  });
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+promptUser();
+
+// inquirer
+//   .prompt(questions)
+
+//   .then((answers) => {
+//     switch (answers.options) {
+//       case "view all departments":
+//         db.query(viewDeptSql, (err, results) => {
+//           if (err) throw err;
+//           console.table(results);
+//         });
+//         console.log("view all departments");
+//         break;
+
+//       case "view all roles":
+//         db.query(viewRolesSql, (err, results) => {
+//           if (err) throw err;
+//           console.table(results);
+//         });
+//         console.log("view all roles");
+//         return;
+
+//       case "view all employees":
+//         db.query(viewEmployeesSql, (err, results) => {
+//           if (err) throw err;
+//           console.table(results);
+//         });
+//         console.log("view all employees");
+//         return;
+
+//       case "add a department":
+//         inquirer.prompt(addDeptInq).then((answers) => {
+//           // console.log(answers.newDept);
+//           db.query(addDeptSql(answers.newDept), (err, results) => {
+//             if (err) throw err;
+//             console.table(results[1]);
+//           });
+//         });
+//         return;
+
+//       case "add a role":
+//         inquirer.prompt(addRoleInq).then((answers) => {
+//           // console.log(answers);
+//           const sqlStatements = addRoleSql(
+//             answers.roleName,
+//             answers.salary,
+//             answers.department
+//           );
+//           sqlStatements.forEach((sql) => {
+//             db.query(sql, (err, results) => {
+//               if (err) throw err;
+//               console.log(
+//                 "Congrats! Your new role has been added to the database. View the new title and salary below."
+//               );
+//               console.table(results[2]);
+
+//               // db.query(`SELECT title FROM role;`, (err, results) => {
+//               //   if (err) throw err;
+//               //   // Extract the titles from the query results
+//               //   const titles = results.map((row) => row.title);
+//               //   console.log('Titles:', titles);
+//               //   // console.log(results);
+//               //   return;
+//               // })
+//             });
+//           });
+//         });
+//         return;
+
+//       case "add an employee":
+//         roleTitles().then(({ titles, managers }) => {
+//           addEmployeeInq[2].choices = titles;
+//           addEmployeeInq[3].choices = managers;
+//           // console.log(addEmployeeInq[2]);
+//           inquirer.prompt(addEmployeeInq).then((answers) => {
+//             const sqlStatements = addEmployeeSql(
+//               answers.employeeFirstName,
+//               answers.employeeLastName,
+//               answers.roleTitle,
+//               answers.managerName
+//             );
+//             sqlStatements.forEach((sql) => {
+//               db.query(sql, (err, results) => {
+//                 if (err) throw err;
+//                 console.log(
+//                   "Congrats! Your new employee has been added to the database. View the employee, role title and manager below."
+//                 );
+//                 // console.table(results[1]);
+//               });
+//             });
+//           });
+//         });
+//         return;
+
+//       case "update an employee role":
+//         inquirer.prompt(updateEmployeeInq).then((answers) => {
+//           const sqlStatements = updateEmployeeRole(
+//             answers.employeeId,
+//             answers.employeeRole
+//           );
+//           sqlStatements.forEach((sql) => {
+//             db.query(sql, (err, results) => {
+//               if (err) throw err;
+//               console.log("Congrats! This employees role was updated.");
+
+//               db.query(`SELECT title FROM role`);
+
+//               // console.table(results);
+//             });
+//           });
+//         });
+//         return;
+
+//       case "exit":
+//         process.exit();
+//     }
+//   });
