@@ -168,30 +168,46 @@ async function promptUser() {
         console.log("view all employees");
         promptUser();
 
-        case "add a department":
-          async function addDept() {
-            try{
-              const answers = await inquirer.prompt(addDeptInq);
-              console.log('new dept:', answers.newDept);
-              db.query(addDeptSql(answers.newDept), (err, results) => {
-                if (err) throw err;
-                console.table(results[1]);
-              }); 
-            } catch (error){
-              console.error(error.message);
-            }
+      case "add a department":
+        async function addDept() {
+          try {
+            const answers = await inquirer.prompt(addDeptInq);
+            console.log("new dept:", answers.newDept);
+            db.query(addDeptSql(answers.newDept), (err, results) => {
+              if (err) throw err;
+              console.table(results[1]);
+            });
+          } catch (error) {
+            console.error(error.message);
           }
-          addDept();
-          return;
+        }
+        addDept();
+        promptUser();
 
-      // inquirer.prompt(addDeptInq).then((answers) => {
-      //   // console.log(answers.newDept);
-      //   db.query(addDeptSql(answers.newDept), (err, results) => {
-      //     if (err) throw err;
-      //     console.table(results[1]);
-      //   });
-      // });
-      // return;
+      case "add a role":
+        async function addRole() {
+          try {
+            const answers = await inquirer.prompt(addRoleInq);
+            const sqlStatements = addRoleSql(
+              answers.roleName,
+              answers.salary,
+              answers.department
+            );
+            sqlStatements.forEach((sql) => {
+              db.query(sql, (err, results) => {
+                if (err) throw err;
+                console.log(
+                  "Congrats! Your new role has been added to the database. View the new title and salary below."
+                );
+                // TODO: combine tables so that title, salary, and dept show on printed table
+                console.table(results[2]);
+              });
+            });
+          } catch (error) {
+            console.error(error.message);
+          }
+        }
+        addRole();
     }
   } catch (error) {
     console.error(error.message);
@@ -238,34 +254,34 @@ promptUser();
 //         });
 //         return;
 
-//       case "add a role":
-//         inquirer.prompt(addRoleInq).then((answers) => {
-//           // console.log(answers);
-//           const sqlStatements = addRoleSql(
-//             answers.roleName,
-//             answers.salary,
-//             answers.department
-//           );
-//           sqlStatements.forEach((sql) => {
-//             db.query(sql, (err, results) => {
-//               if (err) throw err;
-//               console.log(
-//                 "Congrats! Your new role has been added to the database. View the new title and salary below."
-//               );
-//               console.table(results[2]);
+// case "add a role":
+//   inquirer.prompt(addRoleInq).then((answers) => {
+//     // console.log(answers);
+//     const sqlStatements = addRoleSql(
+//       answers.roleName,
+//       answers.salary,
+//       answers.department
+//     );
+//     sqlStatements.forEach((sql) => {
+//       db.query(sql, (err, results) => {
+//         if (err) throw err;
+//         console.log(
+//           "Congrats! Your new role has been added to the database. View the new title and salary below."
+//         );
+//         console.table(results[2]);
 
-//               // db.query(`SELECT title FROM role;`, (err, results) => {
-//               //   if (err) throw err;
-//               //   // Extract the titles from the query results
-//               //   const titles = results.map((row) => row.title);
-//               //   console.log('Titles:', titles);
-//               //   // console.log(results);
-//               //   return;
-//               // })
-//             });
-//           });
-//         });
-//         return;
+//         // db.query(`SELECT title FROM role;`, (err, results) => {
+//         //   if (err) throw err;
+//         //   // Extract the titles from the query results
+//         //   const titles = results.map((row) => row.title);
+//         //   console.log('Titles:', titles);
+//         //   // console.log(results);
+//         //   return;
+//         // })
+//       });
+//     });
+//   });
+//   return;
 
 //       case "add an employee":
 //         roleTitles().then(({ titles, managers }) => {
