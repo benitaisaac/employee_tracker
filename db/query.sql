@@ -53,6 +53,14 @@
 -- SELECT title FROM role;
 
 -- To select a manager: 
-SELECT DISTINCT manager.first_name
-FROM employee AS employee
-JOIN employee AS manager ON employee.manager_id = manager.id;
+-- SELECT DISTINCT manager.first_name
+-- FROM employee AS employee
+-- JOIN employee AS manager ON employee.manager_id = manager.id;
+
+-- testing adding an employee (this one works)
+--I think this one works because I was hard coding it to work. 
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+SELECT 'Brad', 'Bradley', role.id, employee.id
+FROM role, employee
+WHERE role.title = 'Financial Analyst' 
+AND employee.first_name = 'Emily';

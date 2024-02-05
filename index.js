@@ -81,17 +81,28 @@ const addEmployeeInq = [
     message: "Enter last name of new employee",
   },
   {
-    type: "list",
+    type: "input",
     name: "roleTitle",
     message: "What is this employee role?",
-    choices: [],
   },
   {
-    type: "list",
+    type: "input",
     name: "managerName",
     message: "Who is the manager?",
-    choices: [],
-  },
+  }
+  // TODO: Change the last two objects to type lists. Use commented code below
+  // {
+  //   type: "list",
+  //   name: "roleTitle",
+  //   message: "What is this employee role?",
+  //   choices: [],
+  // },
+  // {
+  //   type: "list",
+  //   name: "managerName",
+  //   message: "Who is the manager?",
+  //   choices: [],
+  // },
 ];
 
 const updateEmployeeInq = [
@@ -139,7 +150,6 @@ const roleTitles = () => {
     });
   });
 };
-
 async function promptUser() {
   try {
     const answers = await inquirer.prompt(questions);
@@ -201,6 +211,7 @@ async function promptUser() {
                 );
                 // TODO: combine tables so that title, salary, and dept show on printed table
                 console.table(results[2]);
+                promptUser();
               });
             });
           } catch (error) {
@@ -208,6 +219,38 @@ async function promptUser() {
           }
         }
         addRole();
+
+        //Note that this one only works right now if we enter the role and the manager name exactly as it's supposed to be added. 
+        //I wont change that because I need to change 'input' to 'list' for the inquirer
+      case "add an employee":
+        async function addEmployee() {
+          try {
+            // roleTitles()
+            // addEmployeeInq[2].choices = titles;
+            // addEmployeeInq[3].choices = managers;
+            const answers = await inquirer.prompt(addEmployeeInq);
+            const sqlStatements = addEmployeeSql(
+              answers.employeeFirstName,
+              answers.employeeLastName,
+              answers.roleTitle,
+              answers.managerName
+            );
+            
+            sqlStatements.forEach((sql) => {
+              db.query(sql, (err, results) => {
+                if (err) throw err;
+                console.log(
+                  "Congrats! Your new employee has been added to the database. View the employee, role title and manager below."
+                );
+                // TODO: Display the table
+                // console.log(results);
+              });
+            });
+          } catch (error) {
+            console.error(error.message);
+          }
+        }
+        addEmployee();
     }
   } catch (error) {
     console.error(error.message);
@@ -283,30 +326,30 @@ promptUser();
 //   });
 //   return;
 
-//       case "add an employee":
-//         roleTitles().then(({ titles, managers }) => {
-//           addEmployeeInq[2].choices = titles;
-//           addEmployeeInq[3].choices = managers;
-//           // console.log(addEmployeeInq[2]);
-//           inquirer.prompt(addEmployeeInq).then((answers) => {
-//             const sqlStatements = addEmployeeSql(
-//               answers.employeeFirstName,
-//               answers.employeeLastName,
-//               answers.roleTitle,
-//               answers.managerName
-//             );
-//             sqlStatements.forEach((sql) => {
-//               db.query(sql, (err, results) => {
-//                 if (err) throw err;
-//                 console.log(
-//                   "Congrats! Your new employee has been added to the database. View the employee, role title and manager below."
-//                 );
-//                 // console.table(results[1]);
-//               });
-//             });
-//           });
+// case "add an employee":
+//   roleTitles().then(({ titles, managers }) => {
+//     addEmployeeInq[2].choices = titles;
+//     addEmployeeInq[3].choices = managers;
+//     // console.log(addEmployeeInq[2]);
+//     inquirer.prompt(addEmployeeInq).then((answers) => {
+//       const sqlStatements = addEmployeeSql(
+//         answers.employeeFirstName,
+//         answers.employeeLastName,
+//         answers.roleTitle,
+//         answers.managerName
+//       );
+//       sqlStatements.forEach((sql) => {
+//         db.query(sql, (err, results) => {
+//           if (err) throw err;
+//           console.log(
+//             "Congrats! Your new employee has been added to the database. View the employee, role title and manager below."
+//           );
+//           // console.table(results[1]);
 //         });
-//         return;
+//       });
+//     });
+//   });
+//   return;
 
 //       case "update an employee role":
 //         inquirer.prompt(updateEmployeeInq).then((answers) => {
