@@ -1,5 +1,4 @@
 const inquirer = require("inquirer");
-const fs = require("fs");
 const mysql = require("mysql2");
 
 //require template literals for SQL query
@@ -150,6 +149,26 @@ const roleTitles = () => {
     });
   });
 };
+
+//TODO: make a function that will pull all the roles from the database and display that as the list for adding an employee
+async function allTitles() {
+  let titles;
+  db.query(`SELECT title FROM role;`, (err, results) => {
+    if (err) throw err;
+    // Extract the titles from the query results
+    const result = results.map((row) => row.title);
+    // console.log(results);
+    // console.log(titles);
+    titles = result;
+    console.log(titles);
+  });
+}
+
+//for testing, it WORKS?! 
+allTitles();
+
+
+
 async function promptUser() {
   try {
     const answers = await inquirer.prompt(questions);
