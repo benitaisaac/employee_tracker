@@ -1,5 +1,5 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
 //require template literals for SQL query
 const {
@@ -125,49 +125,76 @@ const updateEmployeeInq = [
   },
 ];
 // Create arrays for list options
-const roleTitles = () => {
-  return new Promise((resolve, reject) => {
-    let titles, managers;
-    db.query(`SELECT title FROM role;`, (err, results) => {
-      if (err) throw err;
-      // Extract the titles from the query results
-      const result = results.map((row) => row.title);
-      // console.log(results);
-      // console.log(titles);
-      titles = result;
-      db.query(
-        `SELECT DISTINCT manager.first_name
+// const roleTitles = () => {
+//   return new Promise((resolve, reject) => {
+//     let titles, managers;
+//     db.query(`SELECT title FROM role;`, (err, results) => {
+//       if (err) throw err;
+//       // Extract the titles from the query results
+//       const result = results.map((row) => row.title);
+//       // console.log(results);
+//       // console.log(titles);
+//       titles = result;
+//       db.query(
+//         `SELECT DISTINCT manager.first_name
+//       FROM employee
+//       JOIN employee AS manager ON employee.manager_id = manager.id;`,
+//         (err, results) => {
+//           if (err) throw err;
+//           const result = results.map((row) => row.first_name);
+//           managers = result;
+//           resolve({ titles, managers });
+//         }
+//       );
+//     });
+//   });
+// };
+
+//Trying to make the function with await 
+async function allManagers() {
+  try {
+    const results = await db.query(
+      `SELECT DISTINCT manager.first_name
       FROM employee
-      JOIN employee AS manager ON employee.manager_id = manager.id;`,
-        (err, results) => {
-          if (err) throw err;
-          const result = results.map((row) => row.first_name);
-          managers = result;
-          resolve({ titles, managers });
-        }
-      );
-    });
-  });
-};
+      JOIN employee AS manager ON employee.manager_id = manager.id;`
+    );
+
+    const titles = results.map((row) => row.first_name);
+    return titles;
+  } catch (err) {
+    throw err;
+  }
+}
+
+allManagers();
 
 //TODO: make a function that will pull all the roles from the database and display that as the list for adding an employee
 async function allTitles() {
-  let titles;
+  let titles, managers;
+
   db.query(`SELECT title FROM role;`, (err, results) => {
     if (err) throw err;
     // Extract the titles from the query results
     const result = results.map((row) => row.title);
-    // console.log(results);
-    // console.log(titles);
     titles = result;
     console.log(titles);
+
+    db.query(
+      `SELECT DISTINCT manager.first_name
+    FROM employee
+    JOIN employee AS manager ON employee.manager_id = manager.id;`,
+      (err, results) => {
+        if (err) throw err;
+        const result = results.map((row) => row.first_name);
+        managers = result;
+        console.log(managers);
+      }
+    );
   });
 }
 
-//for testing, it WORKS?! 
+//for testing, it WORKS?!
 allTitles();
-
-
 
 async function promptUser() {
   try {
