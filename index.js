@@ -89,7 +89,7 @@ const addEmployeeInq = [
     type: "input",
     name: "managerName",
     message: "Who is the manager?",
-  }
+  },
   // TODO: Change the last two objects to type lists. Use commented code below
   // {
   //   type: "list",
@@ -220,8 +220,8 @@ async function promptUser() {
         }
         addRole();
 
-        //Note that this one only works right now if we enter the role and the manager name exactly as it's supposed to be added. 
-        //I wont change that because I need to change 'input' to 'list' for the inquirer
+      //Note that this one only works right now if we enter the role and the manager name exactly as it's supposed to be added.
+      //I wont change that because I need to change 'input' to 'list' for the inquirer
       case "add an employee":
         async function addEmployee() {
           try {
@@ -235,7 +235,7 @@ async function promptUser() {
               answers.roleTitle,
               answers.managerName
             );
-            
+
             sqlStatements.forEach((sql) => {
               db.query(sql, (err, results) => {
                 if (err) throw err;
@@ -251,6 +251,30 @@ async function promptUser() {
           }
         }
         addEmployee();
+
+      case "update an employee role":
+        async function updateEmployee() {
+          try {
+            const answers = await inquirer.prompt(updateEmployeeInq);
+            const sqlStatements = updateEmployeeRole(
+              answers.employeeId,
+              answers.employeeRole
+            );
+            sqlStatements.forEach((sql) => {
+              db.query(sql, (err, results) => {
+                if (err) throw err;
+                console.log("Congrats! This employees role was updated.");
+
+                db.query(`SELECT title FROM role`);
+
+                // console.table(results);
+              });
+            });
+          } catch (error) {
+            console.error(error.message);
+          }
+        }
+        updateEmployee();
     }
   } catch (error) {
     console.error(error.message);
@@ -351,24 +375,24 @@ promptUser();
 //   });
 //   return;
 
-//       case "update an employee role":
-//         inquirer.prompt(updateEmployeeInq).then((answers) => {
-//           const sqlStatements = updateEmployeeRole(
-//             answers.employeeId,
-//             answers.employeeRole
-//           );
-//           sqlStatements.forEach((sql) => {
-//             db.query(sql, (err, results) => {
-//               if (err) throw err;
-//               console.log("Congrats! This employees role was updated.");
+// case "update an employee role":
+//   inquirer.prompt(updateEmployeeInq).then((answers) => {
+//     const sqlStatements = updateEmployeeRole(
+//       answers.employeeId,
+//       answers.employeeRole
+//     );
+//     sqlStatements.forEach((sql) => {
+//       db.query(sql, (err, results) => {
+//         if (err) throw err;
+//         console.log("Congrats! This employees role was updated.");
 
-//               db.query(`SELECT title FROM role`);
+//         db.query(`SELECT title FROM role`);
 
-//               // console.table(results);
-//             });
-//           });
-//         });
-//         return;
+//         // console.table(results);
+//       });
+//     });
+//   });
+//   return;
 
 //       case "exit":
 //         process.exit();
