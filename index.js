@@ -258,24 +258,10 @@ async function promptUser() {
               answers.salary,
               answers.department
             );
+            db.query(sqlStatements)
+            promptUser();
 
-            console.log(sqlStatements);
-
-            async function executeSqlStatements(sqlStatements) {
-              try {
-                for (const sql of sqlStatements) {
-                  const results = await db.query(sql);
-                  console.log(
-                    "Congrats! Your new role has been added to the database. View the new title and salary below."
-                  );
-                  console.log(results);
-                  promptUser();
-                }
-              } catch (err) {
-                throw err;
-              }
-            }
-            executeSqlStatements();
+            
           } catch (error) {
             console.error(error.message);
           }

@@ -24,9 +24,7 @@ SELECT * FROM department;`;
 //SQL code to add a role by entering name, salary and department 
 const addRoleSql = (newRoleName, newSalary, newDept) => {
     const sql = 
-    [`INSERT INTO role (title, salary) VALUES ('${newRoleName}', ${newSalary});
-INSERT INTO department (name) VALUES ('${newDept}');
-SELECT title, salary FROM role;`];
+    `INSERT INTO role (title, salary, department_id) VALUES ('${newRoleName}', ${newSalary}, ${newDept});`;
 return sql; 
 }
 
