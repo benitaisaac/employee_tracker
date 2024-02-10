@@ -237,17 +237,16 @@ async function promptUser() {
             console.log("new dept:", answers.newDept);
 
             const sql = addDeptSql(answers.newDept);
-            [rows, fields] = await db.execute(sql);
-            // console.table(rows[1]);
-            console.log("Department aded successfully!");
+            [rows, fields] = await db.query(sql, [answers.newDept]);
             console.log("All departments:");
-            console.table(rows);
+            console.table(rows[1]);
+            console.log("Department aded successfully!");
+            promptUser();
           } catch (error) {
             console.error(error.message);
           }
         }
         addDept();
-        // promptUser();
         break;
 
       case "add a role":

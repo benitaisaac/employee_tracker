@@ -17,7 +17,7 @@ LEFT OUTER JOIN (SELECT employee.id as manager_id, employee.first_name as manage
 //SQL code to add a new department 
 const addDeptSql = (newDept) => {
 return `INSERT INTO department (name)
-VALUES ('${newDept}');
+VALUES (?);
 SELECT * FROM department;`;
 }
 
