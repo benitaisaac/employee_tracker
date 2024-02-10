@@ -240,7 +240,7 @@ async function promptUser() {
             [rows, fields] = await db.execute(sql);
             // console.table(rows[1]);
             console.log("Department aded successfully!");
-            console.low("All departments:");
+            console.log("All departments:");
             console.table(rows);
           } catch (error) {
             console.error(error.message);
