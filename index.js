@@ -156,7 +156,7 @@ async function allManagers() {
     const results = await db.query(
       `SELECT DISTINCT manager.first_name
       FROM employee
-      JOIN employee AS manager ON employee.manager_id = manager.id;`
+      JOIN employee AS manager ON employee.manager_id = manager.id;`, 
     );
 
     const titles = results.map((row) => row.first_name);
