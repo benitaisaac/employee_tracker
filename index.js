@@ -217,8 +217,8 @@ async function promptUser() {
       case "view all roles":
         [rows, fields] = await db.execute(viewRolesSql);
         console.table(rows);
-        // TODO: see what fields does and if i want it 
-        console.log(fields); 
+        // TODO: see what fields does and if i want it
+        console.log(fields);
         // console.log("view all roles");
         promptUser();
         break;
@@ -258,22 +258,30 @@ async function promptUser() {
               answers.salary,
               answers.department
             );
-            sqlStatements.forEach((sql) => {
-              db.query(sql, (err, results) => {
-                if (err) throw err;
-                console.log(
-                  "Congrats! Your new role has been added to the database. View the new title and salary below."
-                );
-                // TODO: combine tables so that title, salary, and dept show on printed table
-                console.table(results[2]);
-                promptUser();
-              });
-            });
+
+            console.log(sqlStatements);
+
+            async function executeSqlStatements(sqlStatements) {
+              try {
+                for (const sql of sqlStatements) {
+                  const results = await db.query(sql);
+                  console.log(
+                    "Congrats! Your new role has been added to the database. View the new title and salary below."
+                  );
+                  console.log(results);
+                  promptUser();
+                }
+              } catch (err) {
+                throw err;
+              }
+            }
+            executeSqlStatements();
           } catch (error) {
             console.error(error.message);
           }
         }
         addRole();
+        break;
 
       //Note that this one only works right now if we enter the role and the manager name exactly as it's supposed to be added.
       //I wont change that because I need to change 'input' to 'list' for the inquirer
