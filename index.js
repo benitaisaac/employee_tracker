@@ -13,16 +13,17 @@ const {
 } = require("./sql");
 
 // Connect to database
-const db = mysql.createConnection(
-  {
+let db;
+(async function () {
+  db = await mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "password",
     database: "employee_db",
     multipleStatements: true, // Enable multiple query execution
-  },
-  console.log("Connected to the employee_db")
-);
+  });
+  console.log("Connected to the employee_db");
+})();
 
 const questions = [
   {
@@ -150,63 +151,66 @@ const updateEmployeeInq = [
 //   });
 // };
 
-//Trying to make the function with await 
-async function allManagers() {
-  try {
-    const results = await db.query(
-      `SELECT DISTINCT manager.first_name
-      FROM employee
-      JOIN employee AS manager ON employee.manager_id = manager.id;`, 
-    );
+//Trying to make the function with await
+// async function allManagers() {
+//   try {
+//     const results = await db.query(
+//       `SELECT DISTINCT manager.first_name
+//       FROM employee
+//       JOIN employee AS manager ON employee.manager_id = manager.id;`,
+//     );
 
-    const titles = results.map((row) => row.first_name);
-    return titles;
-  } catch (err) {
-    throw err;
-  }
-}
+//     const titles = results.map((row) => row.first_name);
+//     return titles;
+//   } catch (err) {
+//     throw err;
+//   }
+// }
 
-allManagers();
+// allManagers();
 
 //TODO: make a function that will pull all the roles from the database and display that as the list for adding an employee
-async function allTitles() {
-  let titles, managers;
+// async function allTitles() {
+//   // let managers;
 
-  db.query(`SELECT title FROM role;`, (err, results) => {
-    if (err) throw err;
-    // Extract the titles from the query results
-    const result = results.map((row) => row.title);
-    titles = result;
-    console.log(titles);
+//   let titles = await db.query(`SELECT title FROM role;`, (err, results) => {
+//     if (err) throw err;
+//     // Extract the titles from the query results
+//     const result = results.map((row) => row.title);
+//     titles = result;
+//     console.log(titles);
 
-    db.query(
-      `SELECT DISTINCT manager.first_name
-    FROM employee
-    JOIN employee AS manager ON employee.manager_id = manager.id;`,
-      (err, results) => {
-        if (err) throw err;
-        const result = results.map((row) => row.first_name);
-        managers = result;
-        console.log(managers);
-      }
-    );
-  });
-}
+//     // db.query(
+//     //   `SELECT DISTINCT manager.first_name
+//     // FROM employee
+//     // JOIN employee AS manager ON employee.manager_id = manager.id;`,
+//     //   (err, results) => {
+//     //     if (err) throw err;
+//     //     const result = results.map((row) => row.first_name);
+//     //     managers = result;
+//     //     console.log(managers);
+//     //   }
+//     // );
+//   });
+// }
 
 //for testing, it WORKS?!
-allTitles();
+// allTitles();
 
 async function promptUser() {
   try {
     const answers = await inquirer.prompt(questions);
     switch (answers.options) {
       case "view all departments":
-        db.query(viewDeptSql, (err, results) => {
-          if (err) throw err;
-          console.table(results);
-        });
+        const [rows, fields] = await db.execute(viewDeptSql);
+        console.table(rows);
+        // db.query(viewDeptSql, (err, results) => {
+        //   if (err) throw err;
+        //   console.table(results);
+        // });
         console.log("view all departments");
         promptUser();
+        break;
 
       case "view all roles":
         db.query(viewRolesSql, (err, results) => {
