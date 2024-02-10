@@ -200,9 +200,11 @@ const updateEmployeeInq = [
 async function promptUser() {
   try {
     const answers = await inquirer.prompt(questions);
+    let rows, fields;
+
     switch (answers.options) {
       case "view all departments":
-        const [rows, fields] = await db.execute(viewDeptSql);
+        [rows, fields] = await db.execute(viewDeptSql);
         console.table(rows);
         // db.query(viewDeptSql, (err, results) => {
         //   if (err) throw err;
@@ -213,20 +215,20 @@ async function promptUser() {
         break;
 
       case "view all roles":
-        db.query(viewRolesSql, (err, results) => {
-          if (err) throw err;
-          console.table(results);
-        });
+        [rows, fields] = await db.execute(viewRolesSql);
+        console.table(rows);
+        // TODO: see what fields does and if i want it 
+        console.log(fields); 
         // console.log("view all roles");
         promptUser();
+        break;
 
       case "view all employees":
-        db.query(viewEmployeesSql, (err, results) => {
-          if (err) throw err;
-          console.table(results);
-        });
-        console.log("view all employees");
+        [rows, fields] = await db.execute(viewEmployeesSql);
+        console.table(rows);
+        // console.log("view all employees");
         promptUser();
+        break;
 
       case "add a department":
         async function addDept() {
