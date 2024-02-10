@@ -235,16 +235,20 @@ async function promptUser() {
           try {
             const answers = await inquirer.prompt(addDeptInq);
             console.log("new dept:", answers.newDept);
-            db.query(addDeptSql(answers.newDept), (err, results) => {
-              if (err) throw err;
-              console.table(results[1]);
-            });
+
+            const sql = addDeptSql(answers.newDept);
+            [rows, fields] = await db.execute(sql);
+            // console.table(rows[1]);
+            console.log("Department aded successfully!");
+            console.low("All departments:");
+            console.table(rows);
           } catch (error) {
             console.error(error.message);
           }
         }
         addDept();
-        promptUser();
+        // promptUser();
+        break;
 
       case "add a role":
         async function addRole() {
