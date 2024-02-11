@@ -80,29 +80,29 @@ const addEmployeeInq = [
     name: "employeeLastName",
     message: "Enter last name of new employee",
   },
-  {
-    type: "input",
-    name: "roleTitle",
-    message: "What is this employee role?",
-  },
-  {
-    type: "input",
-    name: "managerName",
-    message: "Who is the manager?",
-  },
-  // TODO: Change the last two objects to type lists. Use commented code below
   // {
-  //   type: "list",
+  //   type: "input",
   //   name: "roleTitle",
   //   message: "What is this employee role?",
-  //   choices: [],
   // },
   // {
-  //   type: "list",
+  //   type: "input",
   //   name: "managerName",
   //   message: "Who is the manager?",
-  //   choices: [],
   // },
+  // TODO: Change the last two objects to type lists. Use commented code below
+  {
+    type: "list",
+    name: "roleTitle",
+    message: "What is this employee role?",
+    choices: [],
+  },
+  {
+    type: "list",
+    name: "managerName",
+    message: "Who is the manager?",
+    choices: [],
+  }
 ];
 
 const updateEmployeeInq = [
@@ -170,32 +170,34 @@ const updateEmployeeInq = [
 // allManagers();
 
 //TODO: make a function that will pull all the roles from the database and display that as the list for adding an employee
-// async function allTitles() {
-//   // let managers;
+async function allTitles() {
+  try {
+  // let managers;
 
-//   let titles = await db.query(`SELECT title FROM role;`, (err, results) => {
-//     if (err) throw err;
-//     // Extract the titles from the query results
-//     const result = results.map((row) => row.title);
-//     titles = result;
-//     console.log(titles);
+  let result = await db.execute(`SELECT title FROM role;`);
+    // Extract the titles from the query results
+    // const title = result.map((row) => row.title);
+    // titles = result;
+    console.log(result);
+  } catch (err) {
+    throw err;
+  }
 
-//     // db.query(
-//     //   `SELECT DISTINCT manager.first_name
-//     // FROM employee
-//     // JOIN employee AS manager ON employee.manager_id = manager.id;`,
-//     //   (err, results) => {
-//     //     if (err) throw err;
-//     //     const result = results.map((row) => row.first_name);
-//     //     managers = result;
-//     //     console.log(managers);
-//     //   }
-//     // );
-//   });
-// }
+    // db.query(
+    //   `SELECT DISTINCT manager.first_name
+    // FROM employee
+    // JOIN employee AS manager ON employee.manager_id = manager.id;`,
+    //   (err, results) => {
+    //     if (err) throw err;
+    //     const result = results.map((row) => row.first_name);
+    //     managers = result;
+    //     console.log(managers);
+    //   }
+    // );
+  };
 
 //for testing, it WORKS?!
-// allTitles();
+allTitles();
 
 async function promptUser() {
   try {
