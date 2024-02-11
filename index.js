@@ -255,15 +255,22 @@ async function promptUser() {
       case "add a role": {
         async function addRole() {
           try {
+            // creating var departments by running viewDeptSql code and only getting the first value 
             const [departments] = await db.query(viewDeptSql)
+            // Mapping the departments array that we received above
+            // Setting the list options in the addRoleInq array for the user to choose from
             addRoleInq[2].choices = departments.map((e) => e.name)
+            // Destructuring so we can use roleName, salary, and department as variables 
             const {roleName, salary, department} = await inquirer.prompt(addRoleInq);
+            // When a user chooses the department, we will return back the id
             const depId = departments.find((e) => e.name === department).id
+            // Run the SQL query to add a new department to the table using the department ID that we generated above 
             const [rows] = await db.query(addRoleSql, [roleName, salary, depId])
+            // Tell the user the role has been added and show the roles table 
             console.log("congrats! Your new role has been added.")
             const roles = await db.query(viewRolesSql);
             console.table(roles[0]);
-            // console.log(rows);
+            // Give the user an option to perform another action 
             promptUser();
 
             
@@ -277,37 +284,40 @@ async function promptUser() {
 
       //Note that this one only works right now if we enter the role and the manager name exactly as it's supposed to be added.
       //I wont change that because I need to change 'input' to 'list' for the inquirer
-      case "add an employee":
+      case "add an employee": {
         async function addEmployee() {
           try {
-            const titles = await allTitles();
-            // roleTitles()
-            addEmployeeInq[2].choices = titles;
-            // addEmployeeInq[3].choices = managers;
-            const answers = await inquirer.prompt(addEmployeeInq);
-            const sqlStatements = addEmployeeSql(
-              answers.employeeFirstName,
-              answers.employeeLastName,
-              answers.roleTitle,
-              answers.managerName
-            );
+            const [roles] = await db.query(viewRolesSql);
+            addEmployeeInq[2].choices = roles.map((e) => e.title);
 
-            sqlStatements.forEach((sql) => {
-              db.query(sql, (err, results) => {
-                if (err) throw err;
-                console.log(
-                  "Congrats! Your new employee has been added to the database. View the employee, role title and manager below."
-                );
-                // TODO: Display the table
-                // console.log(results);
-              });
-            });
+            const [employees] = await db.query(viewEmployeesSql)
+            addEmployeeInq[3].choices = employees.map((e) => e.first_name);
+
+            // destructure the keys so we can use them as variables 
+            const {employeeFirstName, employeeLastName, roleTitle, managerName} = await inquirer.prompt(addEmployeeInq);
+
+            console.log(roles);
+            console.log(employees);
+
+            // when user selects a role, we will return back the role ID
+            const roleId =  roles.find((e) => e.title === roleTitle).role_id;
+            const managerId = employees.find((e) => e.first_name === managerName).employee_id;
+
+            //Run SQL to add employee to the table using the ID's we've generated from above 
+            const [rows] = await db.query(addEmployeeSql, [employeeFirstName, employeeLastName, roleId, managerId]);
+
+            console.log("Congrats! Your new employee has been added to the database");
+            const [viewEmployee] = await db.query(viewEmployeesSql);
+            console.table(viewEmployee);
+            promptUser();
+
           } catch (error) {
             console.error(error.message);
           }
         }
         addEmployee();
         break;
+      }
 
       case "update an employee role":
         async function updateEmployee() {
@@ -337,7 +347,7 @@ async function promptUser() {
     console.error(error.message);
   }
 }
-promptUser();
+
 
 // inquirer
 //   .prompt(questions)

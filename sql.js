@@ -25,17 +25,13 @@ SELECT * FROM department;`;
 //This is a prepare statement 
 const addRoleSql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?);`;
 
-const addEmployeeSql = (newFirstName, newLastName, roleTitle, managerName) => {
-    const sql = 
-    [`INSERT INTO employee (first_name, last_name, role_id, manager_id)
-    SELECT '${newFirstName}', '${newLastName}', role.id, employee.id
+const addEmployeeSql = 
+    `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    SELECT ?, ?, role.id, employee.id
     FROM role, employee
-    WHERE role.title = '${roleTitle}' 
-    AND employee.first_name = '${managerName}';`
-    ]
-    // console.log(sql);
-    return sql;
-}
+    WHERE role.id = ? 
+    AND employee.id = ?`
+
 // This code taken out of addEmployeeSql - 
 // SELECT e.first_name AS employee_first_name, e.last_name AS employee_last_name, r.title AS role_title, m.first_name AS manager_first_name
 //     FROM employee e
