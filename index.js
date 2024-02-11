@@ -65,7 +65,7 @@ const addRoleInq = [
   {
     type: "input",
     name: "department",
-    message: "Enter department for new role",
+    message: "Enter the department ID for the new role",
   },
 ];
 
@@ -258,7 +258,11 @@ async function promptUser() {
               answers.salary,
               answers.department
             );
-            db.query(sqlStatements)
+            [rows, fields] = await db.query(sqlStatements)
+            console.log("congrats! Your new role has been added.")
+            const roles = await db.query(viewRolesSql);
+            console.table(roles[0]);
+            // console.log(rows);
             promptUser();
 
             
