@@ -14,16 +14,15 @@ JOIN department ON role.department_id = department.id
 LEFT OUTER JOIN (SELECT employee.id as manager_id, employee.first_name as manager_first_name, employee.last_name as manager_last_name FROM employee) manager ON employee.manager_id = manager.manager_id;`
 
 
-//SQL code to add a new department 
 const addDeptSql = 
 `INSERT INTO department (name)
 VALUES (?);
 SELECT * FROM department;`;
 
-//SQL code to add a role by entering name, salary and department 
-//This is a prepare statement 
+// Use a prepare statement to account for user data  
 const addRoleSql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?);`;
 
+// Use a prepare statement to account for user data  
 const addEmployeeSql = 
     `INSERT INTO employee (first_name, last_name, role_id, manager_id)
     SELECT ?, ?, role.id, employee.id
@@ -31,14 +30,7 @@ const addEmployeeSql =
     WHERE role.id = ? 
     AND employee.id = ?`
 
-// This code taken out of addEmployeeSql - 
-// SELECT e.first_name AS employee_first_name, e.last_name AS employee_last_name, r.title AS role_title, m.first_name AS manager_first_name
-//     FROM employee e
-//     JOIN role r ON e.role_id = r.id
-//     LEFT JOIN employee m ON e.manager_id = m.id
-//     WHERE e.id = ${newEmployeeId};] 
-    // return sql;
-
+// Use a prepare statement to account for user data  
 const updateEmployeeRole = 
     `UPDATE employee
     SET role_id = (SELECT role.id FROM role WHERE role.id = ?)
