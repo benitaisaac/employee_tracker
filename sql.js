@@ -4,7 +4,7 @@ const viewDeptSql =
 const viewRolesSql = 
 `SELECT title, role.id as role_id, salary, department.name as department
 FROM role
-JOIN department ON role.department_id = department.id;`
+LEFT JOIN department ON role.department_id = department.id;`
 
 const viewEmployeesSql = 
 `SELECT employee.id as employee_id, employee.first_name, employee.last_name, role.title as job_title, department.name as department, role.salary, manager.manager_first_name
@@ -22,11 +22,8 @@ SELECT * FROM department;`;
 }
 
 //SQL code to add a role by entering name, salary and department 
-const addRoleSql = (newRoleName, newSalary, newDept) => {
-    const sql = 
-    `INSERT INTO role (title, salary, department_id) VALUES ('${newRoleName}', ${newSalary}, ${newDept});`;
-return sql; 
-}
+//This is a prepare statement 
+const addRoleSql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?);`;
 
 const addEmployeeSql = (newFirstName, newLastName, roleTitle, managerName) => {
     const sql = 

@@ -58,14 +58,15 @@ const addRoleInq = [
     message: "Enter name for the new role",
   },
   {
-    type: "input",
+    type: "number",
     name: "salary",
     message: "Enter salary for the new role",
   },
   {
-    type: "input",
+    type: "list",
     name: "department",
     message: "Enter the department ID for the new role",
+    choices: []
   },
 ];
 
@@ -174,11 +175,11 @@ async function allTitles() {
   try {
   // let managers;
 
-  let result = await db.execute(`SELECT title FROM role;`);
+  let [result] = await db.query(`SELECT title FROM role;`);
     // Extract the titles from the query results
     // const title = result.map((row) => row.title);
     // titles = result;
-    console.log(result);
+    return result.map((e) => e.title );
   } catch (err) {
     throw err;
   }
@@ -197,7 +198,7 @@ async function allTitles() {
   };
 
 //for testing, it WORKS?!
-allTitles();
+// allTitles();
 
 async function promptUser() {
   try {
@@ -251,16 +252,14 @@ async function promptUser() {
         addDept();
         break;
 
-      case "add a role":
+      case "add a role": {
         async function addRole() {
           try {
-            const answers = await inquirer.prompt(addRoleInq);
-            const sqlStatements = addRoleSql(
-              answers.roleName,
-              answers.salary,
-              answers.department
-            );
-            [rows, fields] = await db.query(sqlStatements)
+            const [departments] = await db.query(viewDeptSql)
+            addRoleInq[2].choices = departments.map((e) => e.name)
+            const {roleName, salary, department} = await inquirer.prompt(addRoleInq);
+            const depId = departments.find((e) => e.name === department).id
+            const [rows] = await db.query(addRoleSql, [roleName, salary, depId])
             console.log("congrats! Your new role has been added.")
             const roles = await db.query(viewRolesSql);
             console.table(roles[0]);
@@ -274,14 +273,16 @@ async function promptUser() {
         }
         addRole();
         break;
+      }
 
       //Note that this one only works right now if we enter the role and the manager name exactly as it's supposed to be added.
       //I wont change that because I need to change 'input' to 'list' for the inquirer
       case "add an employee":
         async function addEmployee() {
           try {
+            const titles = await allTitles();
             // roleTitles()
-            // addEmployeeInq[2].choices = titles;
+            addEmployeeInq[2].choices = titles;
             // addEmployeeInq[3].choices = managers;
             const answers = await inquirer.prompt(addEmployeeInq);
             const sqlStatements = addEmployeeSql(
@@ -306,6 +307,7 @@ async function promptUser() {
           }
         }
         addEmployee();
+        break;
 
       case "update an employee role":
         async function updateEmployee() {
