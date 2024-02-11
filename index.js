@@ -173,14 +173,13 @@ async function promptUser() {
         promptUser();
         break;
 
-      case "add a department":
+      case "add a department": {
         async function addDept() {
           try {
             const answers = await inquirer.prompt(addDeptInq);
             console.log("new dept:", answers.newDept);
 
-            const sql = addDeptSql(answers.newDept);
-            [rows, fields] = await db.query(sql, [answers.newDept]);
+            const [rows] = await db.query(addDeptSql, [answers.newDept]);
             console.log("All departments:");
             console.table(rows[1]);
             console.log("Department aded successfully!");
@@ -191,11 +190,12 @@ async function promptUser() {
         }
         addDept();
         break;
+      }
 
       case "add a role": {
         async function addRole() {
           try {
-            // creating var departments by running viewDeptSql code and only getting the first value 
+            // creating departments variable by running viewDeptSql code and only getting the first value 
             const [departments] = await db.query(viewDeptSql)
             // Mapping the departments array that we received above
             // Setting the list options in the addRoleInq array for the user to choose from

@@ -15,11 +15,10 @@ LEFT OUTER JOIN (SELECT employee.id as manager_id, employee.first_name as manage
 
 
 //SQL code to add a new department 
-const addDeptSql = (newDept) => {
-return `INSERT INTO department (name)
+const addDeptSql = 
+`INSERT INTO department (name)
 VALUES (?);
 SELECT * FROM department;`;
-}
 
 //SQL code to add a role by entering name, salary and department 
 //This is a prepare statement 
