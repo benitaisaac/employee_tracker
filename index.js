@@ -108,22 +108,16 @@ const addEmployeeInq = [
 
 const updateEmployeeInq = [
   {
-    type: "input",
-    name: "employeeId",
-    message: "Enter the ID of the employee that you would like to update",
+    type: "list",
+    name: "employee",
+    message: "Which employee would you like to update?",
+    choices: []
   },
   {
     type: "list",
     name: "employeeRole",
     message: "What new role will this employee have?",
-    choices: [
-      "HR Manager",
-      "Financial Analyst",
-      "Marketing Specialist",
-      "Software Engineer",
-      "Sales Representative",
-      "Hardware Engineer",
-    ],
+    choices: []
   },
 ];
 // Create arrays for list options
@@ -171,18 +165,18 @@ const updateEmployeeInq = [
 // allManagers();
 
 //TODO: make a function that will pull all the roles from the database and display that as the list for adding an employee
-async function allTitles() {
-  try {
-  // let managers;
+// async function allTitles() {
+//   try {
+//   // let managers;
 
-  let [result] = await db.query(`SELECT title FROM role;`);
-    // Extract the titles from the query results
-    // const title = result.map((row) => row.title);
-    // titles = result;
-    return result.map((e) => e.title );
-  } catch (err) {
-    throw err;
-  }
+//   let [result] = await db.query(`SELECT title FROM role;`);
+//     // Extract the titles from the query results
+//     // const title = result.map((row) => row.title);
+//     // titles = result;
+//     return result.map((e) => e.title );
+//   } catch (err) {
+//     throw err;
+//   }
 
     // db.query(
     //   `SELECT DISTINCT manager.first_name
@@ -195,7 +189,7 @@ async function allTitles() {
     //     console.log(managers);
     //   }
     // );
-  };
+  // };
 
 //for testing, it WORKS?!
 // allTitles();
@@ -207,7 +201,7 @@ async function promptUser() {
 
     switch (answers.options) {
       case "view all departments":
-        [rows, fields] = await db.execute(viewDeptSql);
+        [rows, fields] = await db.query(viewDeptSql);
         console.table(rows);
         // db.query(viewDeptSql, (err, results) => {
         //   if (err) throw err;
@@ -319,35 +313,41 @@ async function promptUser() {
         break;
       }
 
-      case "update an employee role":
+      case "update an employee role": {
         async function updateEmployee() {
           try {
-            const answers = await inquirer.prompt(updateEmployeeInq);
-            const sqlStatements = updateEmployeeRole(
-              answers.employeeId,
-              answers.employeeRole
-            );
-            sqlStatements.forEach((sql) => {
-              db.query(sql, (err, results) => {
-                if (err) throw err;
-                console.log("Congrats! This employees role was updated.");
+            //to populate the inquirer with the approprite list options: employee and roles 
+            const [employees] = await db.query(viewEmployeesSql);
+            updateEmployeeInq[0].choices = employees.map((e) => e.first_name);
 
-                db.query(`SELECT title FROM role`);
+            const [roles] = await db.query(viewRolesSql);
+            updateEmployeeInq[1].choices = roles.map((e) => e.title);
 
-                // console.table(results);
-              });
-            });
+            const {employee, employeeRole} = await inquirer.prompt(updateEmployeeInq);
+
+            const employeeId = employees.find((e) => e.first_name === employee).employee_id;
+            const roleId = roles.find((e) => e.title === employeeRole).role_id;
+
+            const [rows] = await db.query(updateEmployeeRole, [roleId, employeeId]);
+
+
+            console.log("congrats! You have updated the employees info");
+            promptUser();
+
           } catch (error) {
             console.error(error.message);
           }
         }
         updateEmployee();
+        break;
     }
+  }
   } catch (error) {
     console.error(error.message);
   }
 }
 
+promptUser();
 
 // inquirer
 //   .prompt(questions)

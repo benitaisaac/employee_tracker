@@ -40,12 +40,10 @@ const addEmployeeSql =
 //     WHERE e.id = ${newEmployeeId};] 
     // return sql;
 
-const updateEmployeeRole = (employeeID, updatedRole) => {
-    const sql =
-    [`UPDATE employee
-    SET role_id = (SELECT role.id FROM role WHERE title = '${updatedRole}')
-    WHERE id = ${employeeID};`]
-    return sql
-}
+const updateEmployeeRole = 
+    `UPDATE employee
+    SET role_id = (SELECT role.id FROM role WHERE role.id = ?)
+    WHERE id = ?;`
+
 
 module.exports = {viewDeptSql, viewRolesSql, viewEmployeesSql, addDeptSql, addRoleSql, addEmployeeSql, updateEmployeeRole}

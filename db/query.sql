@@ -44,9 +44,8 @@
 -- WHEN I choose to update an employee role
 -- THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
 
--- UPDATE employee
--- SET role_id = (SELECT role.id FROM role WHERE title = 'Hardware Engineer')
--- WHERE id = 2;
+
+
 
 
 -- Code to view all roles
@@ -58,9 +57,13 @@
 -- JOIN employee AS manager ON employee.manager_id = manager.id;
 
 -- testing adding an employee (this one works)
---I think this one works because I was hard coding it to work. 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-SELECT 'Brad', 'Bradley', role.id, employee.id
-FROM role, employee
-WHERE role.title = 'Financial Analyst' 
-AND employee.first_name = 'Emily';
+-- I think this one works because I was hard coding it to work. 
+-- INSERT INTO employee (first_name, last_name, role_id, manager_id)
+-- SELECT 'Brad', 'Bradley', role.id, employee.id
+-- FROM role, employee
+-- WHERE role.title = 'Financial Analyst' 
+-- AND employee.first_name = 'Emily';
+
+UPDATE employee
+SET role_id = (SELECT role.id FROM role WHERE role.id = 1)
+WHERE id = 12;
